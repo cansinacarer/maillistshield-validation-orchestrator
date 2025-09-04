@@ -1,0 +1,30 @@
+# Ignore the ipynb files used for local testing and prototyping
+*.ipynb
+
+# Ignore the coverage artifacts
+.coverage
+coverage.txt
+
+# Pytest cache
+.pytest_cache
+
+# Environment variables
+.env
+
+# Environments
+env/
+env__/
+.env
+.venv
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Visual Studio Code #
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+.history
