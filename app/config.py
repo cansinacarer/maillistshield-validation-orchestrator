@@ -5,6 +5,9 @@ import boto3
 
 PAUSE = config("PAUSE", cast=bool, default=False)
 
+# Number of rows to process from each queue in each round of the round-robin processing
+ROWS_PER_ROUND = config("ROWS_PER_ROUND", cast=int, default=1)
+
 # S3 bucket name
 S3_BUCKET_NAME = config("S3_BUCKET_NAME")
 
@@ -43,3 +46,10 @@ s3 = boto3.resource(
     aws_access_key_id=S3_KEY,
     aws_secret_access_key=S3_SECRET,
 )
+
+VALIDATION_WORKERS = config("VALIDATION_WORKERS", default="").split(",")
+VALIDATOR_API_KEY = config("VALIDATOR_API_KEY", default="")
+if not VALIDATION_WORKERS or VALIDATION_WORKERS == [""]:
+    raise ValueError("No VALIDATION_WORKERS defined in environment variables.")
+if not VALIDATOR_API_KEY:
+    raise ValueError("No VALIDATOR_API_KEY defined in environment variables.")

@@ -16,7 +16,7 @@ Update the file progress by writing to the last_pick_row field of the Batch Jobs
     - process message
     - enqueue result in the other vhost
     - acknowledge message if successful
-    - ignore message if failed
+    - reject message if failed
     - move to next queue
     - exit when i + 1 == len(queues)
 
