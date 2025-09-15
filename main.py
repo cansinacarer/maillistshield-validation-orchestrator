@@ -25,6 +25,7 @@ while True:
             )
             message = queue_agent.get_message(queue_name=queue)
             if message:
+                # If the processor was able to complete validation and publishing to the result queue
                 if email_processor.process_message(message):
                     queue_agent.acknowledge_message(message)
                 else:
