@@ -9,7 +9,6 @@ class EmailProcessor:
     def __init__(self):
         self.next_worker = 0
         # Processor will use the second vhost for RabbitMQ
-        # This is the queue we publish the results after processing
         self.queue_agent = QueueAgent(rabbitmq_vhost=RABBITMQ_DEFAULT_VHOSTS[1])
 
         if not self.queue_agent:
@@ -27,13 +26,11 @@ class EmailProcessor:
         worker = VALIDATION_WORKERS[self.next_worker]
         return worker
 
-    def validate_email(self, message):
+    def validate_email(self, email):
         """
         Send the email to the next validation worker and return the response.
         """
         # Grab email and queueName from the message
-        email, queueName = message.get("email"), message.get("queueName")
-
         worker = self.get_next_worker()
         response = requests.post(
             f"{worker}/validate",
@@ -53,7 +50,8 @@ class EmailProcessor:
             False: If there was an error during processing or publishing.
         """
         # Grab email and queueName from the message
-        email, queue_name = message.get("email"), message.get("queueName")
+        email = message.get("email")
+        queue_name = message.get("queueName")
         if not email:
             logger.error(f"No email found in message: {message}")
             return False
@@ -65,13 +63,24 @@ class EmailProcessor:
             # Validate the email and get the result
             validation_result = self.validate_email(email)
 
+            # Ensure the queue exists before publishing
+            if queue_name not in self.queue_agent.list_all_queues():
+                self.queue_agent.create_queue(
+                    queue_name, arguments={"row_count": message.get("totalRows", 0)}
+                )
+                logger.info(
+                    f"Queue {queue_name} did not exist. Created new queue in vhost {RABBITMQ_DEFAULT_VHOSTS[1]}."
+                )
+
             # Publish the validation result to the queue named
             # the same as the queue of the incoming message
             self.queue_agent.publish_message(
-                queue_name=queue_name, message_body=validation_result
+                queue_name=f"{queue_name}", message_body=validation_result
             )
 
-            logger.info(f"Validation result for {email}: {validation_result}")
+            logger.info(
+                f"Validation result for {email}: {validation_result} published to queue {queue_name} at vhost {RABBITMQ_DEFAULT_VHOSTS[1]}"
+            )
 
             return True
         except Exception as e:
