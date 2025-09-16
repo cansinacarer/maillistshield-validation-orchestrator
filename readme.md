@@ -6,7 +6,8 @@ This service orchestrates email validation with the following tasks:
 - Send the email to a worker, if the result is invalid, send it to the next worker,
 - Use the best results to build the results,
 - Create a queue for the file at vhost `RABBITMQ_DEFAULT_VHOSTS[1]`, if one doesn't exist,
-- Publish the results in the queue at `RABBITMQ_DEFAULT_VHOSTS[1]`.
+- Publish the results in the queue at `RABBITMQ_DEFAULT_VHOSTS[1]`,
+- Clean up the empty validation queues at vhost `RABBITMQ_DEFAULT_VHOSTS[0]`.
 
 ## Round-robin logic for processing user-uploaded files fairly
 

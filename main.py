@@ -52,7 +52,11 @@ while True:
                     f"Row {message['rowNumber']}/{message['totalRows']} processed from queue {queue}: {json.dumps(message, indent=2)}"
                 )
             else:
-                logger.debug(f"No messages in queue: {queue}.")
+                # No messages in the queue, delete it
+                queue_agent.delete_queue(queue)
+                logger.debug(
+                    f"Deleting validation queue {queue} because there is no message in it."
+                )
 
             if i == len(discovered_queues) - 1:
                 logger.debug(
