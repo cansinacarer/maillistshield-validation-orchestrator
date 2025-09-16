@@ -60,10 +60,10 @@ while True:
                     f"Round of processing {ROWS_PER_ROUND} messages from all queues is complete."
                 )
 
-        # Iteration end time
-        end_time = time.time()
-        elapsed_time = end_time - start_time
-        # If the elapsed time is not as long as the polling interval, sleep until it is
-        sleep_time = POLLING_INTERVAL - elapsed_time
-        if sleep_time > 0:
-            time.sleep(sleep_time)
+    # Iteration end time
+    end_time = time.time()
+    elapsed_time = end_time - start_time
+    # If the elapsed time is not as long as the polling interval, sleep until it is
+    sleep_time = POLLING_INTERVAL - elapsed_time
+    if sleep_time > 0:
+        time.sleep(sleep_time)
