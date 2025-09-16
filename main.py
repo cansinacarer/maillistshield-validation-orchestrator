@@ -1,6 +1,5 @@
 import json
 import time
-import asyncio
 
 from app.utilities.rabbitmq import QueueAgent
 from app.utilities.logging import logger
@@ -22,7 +21,7 @@ while True:
         continue
 
     # Ping the uptime monitor
-    asyncio.run(ping_uptime_monitor())
+    ping_uptime_monitor()
 
     # Iterations start time
     start_time = time.time()
