@@ -1,8 +1,10 @@
 import json
 import time
+import asyncio
 
 from app.utilities.rabbitmq import QueueAgent
 from app.utilities.logging import logger
+from app.utilities.reporting import ping_uptime_monitor
 from app.config import ROWS_PER_ROUND, POLLING_INTERVAL, PAUSE
 from app.process_email import EmailProcessor
 
@@ -18,6 +20,9 @@ while True:
         )
         time.sleep(POLLING_INTERVAL)
         continue
+
+    # Ping the uptime monitor
+    asyncio.run(ping_uptime_monitor())
 
     # Iterations start time
     start_time = time.time()
