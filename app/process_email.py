@@ -38,7 +38,7 @@ class EmailProcessor:
         )
         return response.json()
 
-    def process_message(self, message):
+    def process_message(self, message, job_uid):
         """Grab the email from the message, validate it,
         and publish the result to the appropriate queue.
 
@@ -66,7 +66,11 @@ class EmailProcessor:
             # Ensure the queue exists before publishing
             if queue_name not in self.queue_agent.list_all_queues():
                 self.queue_agent.create_queue(
-                    queue_name, arguments={"row_count": message.get("totalRows", 0)}
+                    queue_name,
+                    arguments={
+                        "row_count": message.get("totalRows", 0),
+                        "jobuid": job_uid,  # Pass job_uid to the results queue
+                    },
                 )
                 logger.info(
                     f"Queue {queue_name} did not exist. Created new queue in vhost {RABBITMQ_DEFAULT_VHOSTS[1]}."

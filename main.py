@@ -42,8 +42,13 @@ while True:
             )
             message = queue_agent.get_message(queue_name=queue)
             if message:
+                # Get the job uid from queue args,
+                # to be passed to QueueAgent.process_message method
+                # so that it is added to the results queue as an arg
+                job_uid = queue_agent.get_job_uid(queue_name=queue)
+
                 # If the processor was able to complete validation and publishing to the result queue
-                if email_processor.process_message(message):
+                if email_processor.process_message(message, job_uid):
                     queue_agent.acknowledge_message(message)
                 else:
                     queue_agent.reject_message(message, requeue=True)
