@@ -65,15 +65,18 @@ class EmailProcessor:
 
             # Ensure the queue exists before publishing
             if queue_name not in self.queue_agent.list_all_queues():
+                arguments = {
+                    # Total rows in the original CSV, sent in the msg body
+                    "row_count": message.get("totalRows", 0),
+                    # Passing job_uid to the results queue
+                    "jobuid": job_uid,
+                }
                 self.queue_agent.create_queue(
                     queue_name,
-                    arguments={
-                        "row_count": message.get("totalRows", 0),
-                        "jobuid": job_uid,  # Pass job_uid to the results queue
-                    },
+                    arguments=arguments,
                 )
                 logger.info(
-                    f"Queue {queue_name} did not exist. Created new queue in vhost {RABBITMQ_DEFAULT_VHOSTS[1]}."
+                    f"Queue {queue_name} did not exist. Created new queue in vhost {RABBITMQ_DEFAULT_VHOSTS[1]} with args {arguments}."
                 )
 
             # Publish the validation result to the queue named
