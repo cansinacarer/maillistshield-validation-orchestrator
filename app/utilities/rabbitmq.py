@@ -140,6 +140,17 @@ class QueueAgent:
             return True
         except Exception as e:
             logger.error(f"Error deleting queue '{queue_name}': {e}")
+
+            # Check if we are connected, if not try to reconnect and delete again
+            if self.connection.is_closed:
+                logger.warning(
+                    "Connection is closed. Attempting to reconnect and try deleting again."
+                )
+                if self.connect():
+                    self.delete_queue(queue_name)
+                else:
+                    logger.error("Reconnection attempt from delete_queue() failed.")
+
         return False
 
     def publish_message(self, queue_name, message_body):
@@ -247,6 +258,16 @@ class QueueAgent:
                 return None
         except Exception as e:
             logger.error(f"Error retrieving message from queue '{queue_name}': {e}")
+
+            # Check if we are connected, if not try to reconnect and get message again
+            if self.connection.is_closed:
+                logger.warning(
+                    "Connection is closed. Attempting to reconnect and try getting message again."
+                )
+                if self.connect():
+                    return self.get_message(queue_name, auto_ack=auto_ack)
+                else:
+                    logger.error("Reconnection attempt from get_message() failed.")
         return None
 
     def acknowledge_message(self, message):
