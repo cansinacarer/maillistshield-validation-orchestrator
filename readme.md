@@ -11,7 +11,7 @@ This service orchestrates email validation with the following tasks:
 
 ## Round-robin logic for processing user-uploaded files fairly
 
-In order to process all user uploaded files fairly, we process the files in a round-robin fashin, processing a set number of rows from each file with each round. This is configured in the environment variable `ROWS_PER_ROUND`.
+In order to process all user uploaded files fairly, we process the files in a round-robin fashion, processing a set number of rows from each file with each round. This is configured in the environment variable `ROWS_PER_ROUND`.
 
 - While there are non-empty queues in the relevant vhost
   - Discover queues
