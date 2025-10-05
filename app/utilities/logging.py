@@ -1,7 +1,7 @@
 import logging
 import logging_loki
 
-from app.config import LOKI_HOST, LOKI_PASSWORD, LOKI_USER, SERVICE_NAME
+from app.config import LOKI_HOST, LOKI_PASSWORD, LOKI_USER, SERVICE_NAME, TASK_SLOT
 
 
 def _set_up_logger():
@@ -12,7 +12,10 @@ def _set_up_logger():
     # Set up Loki handler
     loki_handler = logging_loki.LokiHandler(
         url=f"{LOKI_HOST}/loki/api/v1/push",
-        tags={"application": "maillistshield", "service": SERVICE_NAME},
+        tags={
+            "application": "maillistshield",
+            "service": f"{SERVICE_NAME}-{TASK_SLOT}",
+        },
         auth=(LOKI_USER, LOKI_PASSWORD),
         version="1",
     )

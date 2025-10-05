@@ -1,7 +1,7 @@
 from decouple import config
 import pytz
 import boto3
-
+import os
 
 PAUSE = config("PAUSE", cast=bool, default=False)
 
@@ -53,3 +53,6 @@ if not VALIDATION_WORKERS or VALIDATION_WORKERS == [""]:
     raise ValueError("No VALIDATION_WORKERS defined in environment variables.")
 if not VALIDATOR_API_KEY:
     raise ValueError("No VALIDATOR_API_KEY defined in environment variables.")
+
+# Task slot to identify the instance logs are coming from during parallel execution (default is '0' for single instance)
+TASK_SLOT = config("TASK_SLOT", default="0")
