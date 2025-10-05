@@ -55,4 +55,4 @@ if not VALIDATOR_API_KEY:
     raise ValueError("No VALIDATOR_API_KEY defined in environment variables.")
 
 # Task slot to identify the instance logs are coming from during parallel execution (default is '0' for single instance)
-TASK_SLOT = config("TASK_SLOT", default="0")
+HOSTNAME = config("HOSTNAME", default="0")
